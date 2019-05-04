@@ -1,6 +1,6 @@
 
-from final_project.cli import main
+from unittest import TestCase
 
 
-def test_main():
-    main([])
+class FakeTest(TestCase):
+    pass
