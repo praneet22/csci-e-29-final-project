@@ -64,8 +64,6 @@ Overview
 
 .. end-badges
 
-An example package. Generated with cookiecutter-pylibrary.
-
 * Free software: BSD 2-Clause License
 
 Installation
