@@ -9,7 +9,9 @@ pytest-cov = "*"
 
 [packages]
 final_project = {editable = true,path = "."}
-pset-utils = {git = "https://github.com/csci-e-29/2019sp-pset-utils-praneetmsft"}
+luigi = {git = "https://github.com/praneetmsft/luigi"}
+azure-batch = "*"
+azure-storage-blob = "*"
 
 [requires]
 python_version = "3.7"
