@@ -15,9 +15,9 @@ Overview
     * - package
       - | |version| |wheel| |supported-versions| |supported-implementations|
         | |commits-since|
-    * - Develop Branch 
+    * - develop branch 
       - | |develop|
-    * - Master Branch
+    * - master branch
       - | |master|
         
 
