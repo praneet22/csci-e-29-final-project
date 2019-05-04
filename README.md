@@ -31,10 +31,8 @@ To run the all tests run:
 
 Note, to combine the coverage data from all the tox environments run:
 
-+------+---------------------------------------------------------------+
-| Wind |     set PYTEST_ADDOPTS=--cov-append                           |
-| ows  |     tox                                                       |
-+------+---------------------------------------------------------------+
-| Othe |     PYTEST_ADDOPTS=--cov-append tox                           |
-| r    |                                                               |
-+------+---------------------------------------------------------------+
+| Platform | Command | 
+| ------ | :-------- | 
+| Windows | set PYTEST_ADDOPTS=--cov-append tox | 
+| Other | PYTEST_ADDOPTS=--cov-append tox | 
+
