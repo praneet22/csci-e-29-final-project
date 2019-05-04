@@ -2,7 +2,7 @@ Overview
 ========  
 
 | Branch | Build Status |
-| ------ | :--------: | 
+| ------ | :-------- | 
 | Master | [![Build Status](https://travis-ci.com/praneetmsft/csci-e-29-final-project.svg?branch=master)](https://travis-ci.com/praneetmsft/csci-e-29-final-project) | 
 | Develop | [![Build Status](https://travis-ci.com/praneetmsft/csci-e-29-final-project.svg?branch=develop)](https://travis-ci.com/praneetmsft/csci-e-29-final-project) |
 | docs | [![Documentation Status](https://readthedocs.org/projects/2019sp-final-project-praneetmsft/badge/?style=flat)](https://readthedocs.org/projects/2019sp-final-project-praneetmsft)  |
