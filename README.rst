@@ -15,6 +15,20 @@ Overview
     * - package
       - | |version| |wheel| |supported-versions| |supported-implementations|
         | |commits-since|
+    * - Develop Branch 
+      - | |develop|
+    * - Master Branch
+      - | |master|
+        
+
+.. |develop| image:: https://travis-ci.com/praneetmsft/csci-e-29-final-project.svg?branch=develop
+    :target: https://travis-ci.com/praneetmsft/csci-e-29-final-project  
+    :alt: Development Branch Status
+
+.. |master| image:: https://travis-ci.com/praneetmsft/csci-e-29-final-project.svg?branch=master
+    :target: https://travis-ci.com/praneetmsft/csci-e-29-final-project
+    :alt: Master Branch Status
+
 .. |docs| image:: https://readthedocs.org/projects/2019sp-final-project-praneetmsft/badge/?style=flat
     :target: https://readthedocs.org/projects/2019sp-final-project-praneetmsft
     :alt: Documentation Status
