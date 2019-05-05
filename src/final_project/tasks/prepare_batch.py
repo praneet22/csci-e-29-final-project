@@ -51,7 +51,8 @@ class PrepareAzureBatchCPU(AzureBatchTask):
 
 class PrepareAzureBatchGPU(AzureBatchTask):
     """
-    Luigi Task to prepare Azure batch pool for Processing video with ffmpeg on video, audio and images
+    Luigi Task to prepare Azure batch pool for applying style transfer on images from video
+    
     :param batch_account_name (str): name of pre-created azure batch account
     :param batch_account_key (str): master key for azure batch account
     :param batch_account_url (str): batch account url
