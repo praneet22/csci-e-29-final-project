@@ -4,7 +4,7 @@ from pathlib import Path
 from luigi import ExternalTask, Parameter, Task
 
 # from luigi.contrib.external_program import ExternalProgramTask
-from ..luigi.target import SuffixPreservingLocalTarget
+from final_project.luigi.target import SuffixPreservingLocalTarget
 
 
 class DownloadVideo(Task):
