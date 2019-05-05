@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 pytest = "*"
 pytest-cov = "*"
+black = "==18.9b0"
 
 [packages]
 final_project = {editable = true,path = "."}
