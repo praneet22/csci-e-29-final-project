@@ -16,6 +16,9 @@ azure-batch = "*"
 azure-storage-blob = "*"
 requests = "*"
 wget = "*"
+torch = "==1.0.1"
+pillow = "*"
+torchvision = "*"
 
 [requires]
 python_version = "3.7"
