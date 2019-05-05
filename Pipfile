@@ -6,12 +6,16 @@ verify_ssl = true
 [dev-packages]
 pytest = "*"
 pytest-cov = "*"
+ipython = "*"
+black = "==19.3b0"
 
 [packages]
 final_project = {editable = true,path = "."}
 luigi = {git = "https://github.com/praneetmsft/luigi"}
 azure-batch = "*"
 azure-storage-blob = "*"
+requests = "*"
+wget = "*"
 
 [requires]
 python_version = "3.7"
