@@ -52,7 +52,10 @@ class CleanUpResources(ExternalTask):
     def run(self):
         if os.path.exists(self.output_video_name):
             os.remove(self.output_video_name)
-            print(" ==> INFO: {} has been successfully cleaned up.".format(self.output_video_name))
+            print(
+                " ==> INFO: {} has been successfully cleaned up.".format(
+                    self.output_video_name
+                )
+            )
         else:
             print(" ==> INFO: {} does not exist.".format(self.output_video_name))
-
