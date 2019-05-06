@@ -2,6 +2,7 @@ import os
 import luigi
 from luigi import build
 from luigi.contrib.azurebatch import AzureBatchTask
+from pathlib import Path
 
 
 class PreProcessVideo(AzureBatchTask):
@@ -38,7 +39,7 @@ class PreProcessVideo(AzureBatchTask):
     batch_account_url = luigi.Parameter(os.getenv("BATCH_ACCOUNT_URL"))
     storage_account_name = luigi.Parameter(os.getenv("STORAGE_ACCOUNT_NAME"))
     storage_account_key = luigi.Parameter(os.getenv("STORAGE_ACCOUNT_KEY"))
-    data_input_path = luigi.Parameter("data/video/")
+    data_input_path = luigi.Parameter(default=Path("data","video").as_posix())
     command = luigi.ListParameter(command)
     pool_node_count = luigi.IntParameter(1)
     output_path = luigi.Parameter(default=" ")

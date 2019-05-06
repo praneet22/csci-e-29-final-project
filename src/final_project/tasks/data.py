@@ -1,5 +1,6 @@
 import os
 import wget
+import shutil
 from pathlib import Path
 from luigi import ExternalTask, Parameter, Task
 
@@ -26,13 +27,18 @@ class DownloadVideo(Task):
     def run(self):
         # wget.download uses cwd if no path is given and will not accept self.output().path
         # cleanup resource afterwards using a dependent task
-        with self.output().open("w") as outfile:
-            outfile.write(wget.download(self.REMOTE_VIDEO_PATH))
-
-    def output(self):
-        return SuffixPreservingLocalTarget(
-            Path(self.LOCAL_VIDEO_ROOT, self.output_video_name).as_posix()
-        )
+        if not os.path.exists(self.LOCAL_VIDEO_ROOT):
+            print("Creating out video Directory: {}".format(self.LOCAL_VIDEO_ROOT))
+            try:
+                os.makedirs(self.LOCAL_VIDEO_ROOT)
+            except FileExistsError:
+                # directory already exists
+                pass
+        # Download file to data/video if not downloaded
+        video_file_path = Path(self.LOCAL_VIDEO_ROOT, self.output_video_name).as_posix()
+        if not os.path.exists(video_file_path):
+            print('{} does not exist. Downloading now....'.format(self.output_video_name))
+            wget.download(self.REMOTE_VIDEO_PATH, video_file_path)
 
 
 class CleanUpResources(ExternalTask):
@@ -52,7 +58,11 @@ class CleanUpResources(ExternalTask):
     def run(self):
         if os.path.exists(self.output_video_name):
             os.remove(self.output_video_name)
-            print(" ==> INFO: {} has been successfully cleaned up.".format(self.output_video_name))
+            print(
+                " ==> INFO: {} has been successfully cleaned up.".format(
+                    self.output_video_name
+                )
+            )
         else:
             print(" ==> INFO: {} does not exist.".format(self.output_video_name))
 
