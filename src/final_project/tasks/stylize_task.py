@@ -27,8 +27,8 @@ class PreProcessVideo(AzureBatchTask):
     command = [
         "mkdir {}".format(output_audio),
         "mkdir {}".format(output_images),
-        "ffmpeg -i {} {}/audio.aac".format(input_video, output_audio),
-        "ffmpeg -i {} {}/%05d_video.jpg -hide_banner".format(
+        "ffmpeg -i {} {}/audio.aac 2>&1 | tee stdout.txt".format(input_video, output_audio),
+        "ffmpeg -i {} {}/%05d_video.jpg -hide_banner 2>&1 | tee stdout.txt".format(
             input_video, output_images
         ),
     ]
@@ -38,11 +38,13 @@ class PreProcessVideo(AzureBatchTask):
     batch_account_url = luigi.Parameter(os.getenv("BATCH_ACCOUNT_URL"))
     storage_account_name = luigi.Parameter(os.getenv("STORAGE_ACCOUNT_NAME"))
     storage_account_key = luigi.Parameter(os.getenv("STORAGE_ACCOUNT_KEY"))
-    data_input_path = luigi.Parameter(os.path.join("data", "video"))
+    data_input_path = luigi.Parameter("data/video/")
     command = luigi.ListParameter(command)
     pool_node_count = luigi.IntParameter(1)
     output_path = luigi.Parameter(default=" ")
     pool_id = luigi.Parameter("AzureBatch-Pool-Id-12")
+    #job_id = luigi.Parameter("AzureBatch-Job-Id-12")
+
 
 
 if __name__ == "__main__":
