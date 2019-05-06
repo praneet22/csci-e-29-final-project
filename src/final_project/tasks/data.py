@@ -65,4 +65,3 @@ class CleanUpResources(ExternalTask):
             )
         else:
             print(" ==> INFO: {} does not exist.".format(self.output_video_name))
-

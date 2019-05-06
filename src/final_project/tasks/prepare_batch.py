@@ -64,7 +64,6 @@ class PrepareAzureBatchCPU(AzureBatchTask):
     starter_task_cmds = luigi.ListParameter(default=starter_task_cmds)
 
 
-
 class PrepareAzureBatchGPU(AzureBatchTask):
     """
     Luigi Task to prepare Azure batch pool for applying style transfer on images from video

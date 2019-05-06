@@ -14,7 +14,9 @@ def load_image(filename, size=None, scale=None):
     if size is not None:
         img = img.resize((size, size), Image.ANTIALIAS)
     elif scale is not None:
-        img = img.resize((int(img.size[0] / scale), int(img.size[1] / scale)), Image.ANTIALIAS)
+        img = img.resize(
+            (int(img.size[0] / scale), int(img.size[1] / scale)), Image.ANTIALIAS
+        )
     return img
 
 
@@ -111,7 +113,9 @@ class UpsampleConvLayer(torch.nn.Module):
         super(UpsampleConvLayer, self).__init__()
         self.upsample = upsample
         if upsample:
-            self.upsample_layer = torch.nn.Upsample(mode='nearest', scale_factor=upsample)
+            self.upsample_layer = torch.nn.Upsample(
+                mode="nearest", scale_factor=upsample
+            )
         reflection_padding = kernel_size // 2
         self.reflection_pad = torch.nn.ReflectionPad2d(reflection_padding)
         self.conv2d = torch.nn.Conv2d(in_channels, out_channels, kernel_size, stride)
@@ -123,7 +127,7 @@ class UpsampleConvLayer(torch.nn.Module):
         out = self.reflection_pad(x_in)
         out = self.conv2d(out)
         return out
-    
+
 
 def stylize(args):
     device = torch.device("cuda" if args.cuda else "cpu")
@@ -132,7 +136,7 @@ def stylize(args):
         state_dict = torch.load(os.path.join(args.model_dir, "model.pth"))
         # remove saved deprecated running_* keys in InstanceNorm from the checkpoint
         for k in list(state_dict.keys()):
-            if re.search(r'in\d+\.running_(mean|var)$', k):
+            if re.search(r"in\d+\.running_(mean|var)$", k):
                 del state_dict[k]
         style_model.load_state_dict(state_dict)
         style_model.to(device)
@@ -143,10 +147,9 @@ def stylize(args):
             print("Processing {}".format(filename))
             full_path = os.path.join(args.content_dir, filename)
             content_image = load_image(full_path, scale=args.content_scale)
-            content_transform = transforms.Compose([
-                transforms.ToTensor(),
-                transforms.Lambda(lambda x: x.mul(255))
-            ])
+            content_transform = transforms.Compose(
+                [transforms.ToTensor(), transforms.Lambda(lambda x: x.mul(255))]
+            )
             content_image = content_transform(content_image)
             content_image = content_image.unsqueeze(0).to(device)
 
@@ -155,19 +158,37 @@ def stylize(args):
             output_path = os.path.join(args.output_dir, filename)
             save_image(output_path, output[0])
 
+
 def main():
     arg_parser = argparse.ArgumentParser(description="parser for fast-neural-style")
 
-    arg_parser.add_argument("--content-scale", type=float, default=None,
-                                 help="factor for scaling down the content image")
-    arg_parser.add_argument("--model-dir", type=str, required=True,
-                                 help="saved model to be used for stylizing the image.")
-    arg_parser.add_argument("--cuda", type=int, required=True,
-                                 help="set it to 1 for running on GPU, 0 for CPU")
-    arg_parser.add_argument("--content-dir", type=str, required=True,
-            help="directory holding the images")
-    arg_parser.add_argument("--output-dir", type=str, required=True,
-            help="directory holding the output images")
+    arg_parser.add_argument(
+        "--content-scale",
+        type=float,
+        default=None,
+        help="factor for scaling down the content image",
+    )
+    arg_parser.add_argument(
+        "--model-dir",
+        type=str,
+        required=True,
+        help="saved model to be used for stylizing the image.",
+    )
+    arg_parser.add_argument(
+        "--cuda",
+        type=int,
+        required=True,
+        help="set it to 1 for running on GPU, 0 for CPU",
+    )
+    arg_parser.add_argument(
+        "--content-dir", type=str, required=True, help="directory holding the images"
+    )
+    arg_parser.add_argument(
+        "--output-dir",
+        type=str,
+        required=True,
+        help="directory holding the output images",
+    )
     args = arg_parser.parse_args()
 
     if args.cuda and not torch.cuda.is_available():
@@ -179,5 +200,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
