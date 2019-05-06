@@ -19,6 +19,8 @@ class PrepareAzureBatchCPU(AzureBatchTask):
 
     Luigi Task to prepare Azure batch pool for Processing video with ffmpeg on video, audio and images.
     
+    :param azure_files_path (str): file blob path to mount on azure batch
+    :param batch_mnt_path (str): location on azure batch nodes to mount file blob
     :param batch_account_name (str): name of pre-created azure batch account
     :param batch_account_key (str): master key for azure batch account
     :param batch_account_url (str): batch account url
@@ -30,8 +32,20 @@ class PrepareAzureBatchCPU(AzureBatchTask):
     :param pool_vm_size (str): size of vm to use for the batch job
     """
 
-    azure_files_path = "//prsolblobstorage.file.core.windows.net/azurebatchdata"
-    batch_mnt_path = "/mnt/MyAzureFileShare/"
+    azure_files_path = luigi.Parameter(
+        default="//prsolblobstorage.file.core.windows.net/azurebatchdata"
+    )
+    batch_mnt_path = luigi.Parameter(default="/mnt/MyAzureFileShare/")
+    batch_account_name = luigi.Parameter(default=os.getenv("BATCH_ACCOUNT_NAME"))
+    batch_account_key = luigi.Parameter(default=os.getenv("BATCH_ACCOUNT_KEY"))
+    batch_account_url = luigi.Parameter(default=os.getenv("BATCH_ACCOUNT_URL"))
+    storage_account_name = luigi.Parameter(default=os.getenv("STORAGE_ACCOUNT_NAME"))
+    storage_account_key = luigi.Parameter(default=os.getenv("STORAGE_ACCOUNT_KEY"))
+    pool_node_count = luigi.IntParameter(default=1)
+    pool_id = luigi.Parameter("AzureBatch-Pool-Id-18")
+    pool_vm_size = luigi.Parameter(default="STANDARD_D2_V2")
+
+    # build up list of commands to run during node setup
     starter_task_cmds = [
         "apt-get update",
         "apt-get install cifs-utils",
@@ -47,15 +61,8 @@ class PrepareAzureBatchCPU(AzureBatchTask):
         "ffmpeg -version",
         "python3 -m pip install torch torchvision Pillow",
     ]
-    batch_account_name = luigi.Parameter(default=os.getenv("BATCH_ACCOUNT_NAME"))
-    batch_account_key = luigi.Parameter(default=os.getenv("BATCH_ACCOUNT_KEY"))
-    batch_account_url = luigi.Parameter(default=os.getenv("BATCH_ACCOUNT_URL"))
-    storage_account_name = luigi.Parameter(default=os.getenv("STORAGE_ACCOUNT_NAME"))
-    storage_account_key = luigi.Parameter(default=os.getenv("STORAGE_ACCOUNT_KEY"))
-    pool_node_count = luigi.IntParameter(default=1)
     starter_task_cmds = luigi.ListParameter(default=starter_task_cmds)
-    pool_id = luigi.Parameter("AzureBatch-Pool-Id-17")
-    pool_vm_size = luigi.Parameter(default="STANDARD_D2_V2")
+
 
 
 class PrepareAzureBatchGPU(AzureBatchTask):
