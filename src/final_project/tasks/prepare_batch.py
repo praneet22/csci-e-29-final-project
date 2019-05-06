@@ -13,6 +13,7 @@ Prerequisites:
     - azure blob storage: ``pip install azure-storage-blob>=1.3.1``
 """
 
+
 class PrepareAzureBatchCPU(AzureBatchTask):
     """
 
@@ -48,7 +49,6 @@ class PrepareAzureBatchCPU(AzureBatchTask):
     pool_vm_size = luigi.Parameter(default="STANDARD_D2_V2")
 
 
-
 class PrepareAzureBatchGPU(AzureBatchTask):
     """
     Luigi Task to prepare Azure batch pool for applying style transfer on images from video
@@ -81,4 +81,4 @@ class PrepareAzureBatchGPU(AzureBatchTask):
     starter_task_cmds = luigi.ListParameter(default=starter_task_cmds)
     pool_id = luigi.Parameter(default="AzureBatch-Pool-GPU")
     pool_vm_size = luigi.Parameter(default="Standard_NC6")
-    node_agent_sku_id  = luigi.Parameter(default="batch.node.ubuntu 16.04")
+    node_agent_sku_id = luigi.Parameter(default="batch.node.ubuntu 16.04")

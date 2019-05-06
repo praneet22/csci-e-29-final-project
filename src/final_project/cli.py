@@ -15,13 +15,13 @@ Why does this file exist, and why not put this in __main__?
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
 import argparse
-from final_project.tasks.stylize_task import PreProcessVideo
+from final_project.tasks.stylize_task import PreProcessVideo, PostProcessVideo
 from final_project.tasks.prepare_batch import PrepareAzureBatchCPU, PrepareAzureBatchGPU
 from luigi import build
 
 
 def main(args=None):
 
-    build([PrepareAzureBatchCPU(),PrepareAzureBatchGPU()], local_scheduler=True)
+    build([PostProcessVideo()], local_scheduler=True)
     # print("The Stylized image for {} is generated: {}".format(args.image, args.output))
     print("The Stylized video for is generated:".format())
