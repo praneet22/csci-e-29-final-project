@@ -1,10 +1,14 @@
-import os
+import os, time
 import luigi
 import datetime
 from luigi import build
+from luigi.format import Nop
 from luigi.contrib.azurebatch import AzureBatchTask
+from final_project.tasks.data import DownloadVideo
+from final_project.luigi.target import SuffixPreservingLocalTarget
 
 RESOURCE_SUFFIX = datetime.datetime.utcnow().strftime("%Y%m%d%H")
+
 
 class PreProcessVideo(AzureBatchTask):
     """
@@ -24,8 +28,8 @@ class PreProcessVideo(AzureBatchTask):
 
     mnt = "/mnt/MyAzureFileShare"
     input_video = "orangutan.mp4"
-    output_audio = "{}/audio{}".format(mnt,RESOURCE_SUFFIX)
-    output_images = "{}/images{}".format(mnt,RESOURCE_SUFFIX)
+    output_audio = "{}/audio{}".format(mnt, RESOURCE_SUFFIX)
+    output_images = "{}/images{}".format(mnt, RESOURCE_SUFFIX)
 
     command = [
         "mkdir {}".format(output_audio),
@@ -46,6 +50,27 @@ class PreProcessVideo(AzureBatchTask):
     data_input_path = luigi.Parameter(default="data/video/")
     command = luigi.ListParameter(default=command)
     pool_id = luigi.Parameter(default="AzureBatch-Pool-Id-17")
+    path = os.path.join("data", "luigioutputs")
+
+    def requires(self):
+        return DownloadVideo(pool_id=self.pool_id)
+
+    def output(self):
+        return SuffixPreservingLocalTarget(
+            os.path.join(self.path, self.__class__.__name__ + "_success"), format=Nop
+        )
+
+    def run(self):
+        time.sleep(4)
+        super().run()
+        if not os.path.exists(self.path):
+            print("Creating out video Directory: {}".format(self.path))
+            try:
+                os.makedirs(self.path)
+            except FileExistsError:
+                pass
+        with open(os.path.join(self.path, self.__class__.__name__ + "_success"),"w") as fp:
+            fp.write(self.pool_id)
 
 
 class StyleImages(AzureBatchTask):
@@ -59,8 +84,8 @@ class StyleImages(AzureBatchTask):
     """
 
     mnt = "/mnt/MyAzureFileShare"
-    styled_image_output = "{}/styled_output{}".format(mnt,RESOURCE_SUFFIX)
-    image_input_path = "{}/images{}".format(mnt,RESOURCE_SUFFIX)
+    styled_image_output = "{}/styled_output{}".format(mnt, RESOURCE_SUFFIX)
+    image_input_path = "{}/images{}".format(mnt, RESOURCE_SUFFIX)
 
     command = [
         "tar -xvzf artifacts.tar.gz",
@@ -80,6 +105,31 @@ class StyleImages(AzureBatchTask):
     pool_id = luigi.Parameter(default="AzureBatch-Pool-Id-17")
     data_input_path = luigi.Parameter(default="src/final_project/models/artifacts/")
 
+    path = os.path.join("data", "luigioutputs")
+
+    def requires(self):
+        return PreProcessVideo(pool_id=self.pool_id)
+
+    def output(self):
+        return SuffixPreservingLocalTarget(
+            os.path.join(self.path, self.__class__.__name__ + "_success"), format=Nop
+        )
+
+
+    def run(self):
+        time.sleep(4)
+        super().run()
+        if not os.path.exists(self.path):
+            print("Creating out video Directory: {}".format(self.path))
+            try:
+                os.makedirs(self.path)
+            except FileExistsError:
+                pass
+        with open(os.path.join(self.path, self.__class__.__name__ + "_success"),"w") as fp:
+            fp.write(self.pool_id)
+
+
+
 class PostProcessVideo(AzureBatchTask):
     """
     
@@ -97,9 +147,9 @@ class PostProcessVideo(AzureBatchTask):
     """
 
     mnt = "/mnt/MyAzureFileShare"
-    output_vid_dir = "{}/styled_vid{}".format(mnt,RESOURCE_SUFFIX)
-    audio = "{}/audio{}".format(mnt,RESOURCE_SUFFIX)
-    styled_output = "{}/styled_output{}".format(mnt,RESOURCE_SUFFIX)
+    output_vid_dir = "{}/styled_vid{}".format(mnt, RESOURCE_SUFFIX)
+    audio = "{}/audio{}".format(mnt, RESOURCE_SUFFIX)
+    styled_output = "{}/styled_output{}".format(mnt, RESOURCE_SUFFIX)
     styled_video = "styled_orangutan"
 
     command = [
@@ -120,3 +170,24 @@ class PostProcessVideo(AzureBatchTask):
     command = luigi.ListParameter(default=command)
     pool_id = luigi.Parameter(default="AzureBatch-Pool-Id-17")
 
+    path = os.path.join("data", "luigioutputs")
+
+    def requires(self):
+        return StyleImages(pool_id=self.pool_id)
+
+    def output(self):
+        return SuffixPreservingLocalTarget(
+            os.path.join(self.path, self.__class__.__name__ + "_success"), format=Nop
+        )
+
+    def run(self):
+        time.sleep(4)
+        super().run()
+        if not os.path.exists(self.path):
+            print("Creating out video Directory: {}".format(self.path))
+            try:
+                os.makedirs(self.path)
+            except FileExistsError:
+                pass
+        with open(os.path.join(self.path, self.__class__.__name__ + "_success"),"w") as fp:
+            fp.write(self.pool_id)
