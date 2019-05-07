@@ -6,10 +6,19 @@ verify_ssl = true
 [dev-packages]
 pytest = "*"
 pytest-cov = "*"
+ipython = "*"
+black = "==19.3b0"
 
 [packages]
 final_project = {editable = true,path = "."}
-pset-utils = {git = "https://github.com/csci-e-29/2019sp-pset-utils-praneetmsft"}
+luigi = {git = "https://github.com/praneetmsft/luigi"}
+azure-batch = "*"
+azure-storage-blob = "*"
+requests = "*"
+wget = "*"
+pillow = "*"
+torch = "==1.0.1"
+torchvision = "*"
 
 [requires]
 python_version = "3.7"
