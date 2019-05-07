@@ -16,18 +16,16 @@ Why does this file exist, and why not put this in __main__?
 """
 import argparse
 from final_project.tasks.data import DownloadVideo
-from final_project.tasks.stylize_task import PreProcessVideo, PostProcessVideo, StyleImages
+from final_project.tasks.stylize_task import (
+    PreProcessVideo,
+    PostProcessVideo,
+    StyleImages,
+)
 from final_project.tasks.prepare_batch import PrepareAzureBatchCPU, PrepareAzureBatchGPU
 from luigi import build
 
 
 def main(args=None):
 
-    build(
-        [
-            # PrepareAzureBatchCPU(),
-            StyleImages()
-        ],
-        local_scheduler=True,
-    )
+    build([PostProcessVideo()], local_scheduler=True)
     print("The Stylized video for is generated:".format())
