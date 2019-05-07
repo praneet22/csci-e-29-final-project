@@ -23,11 +23,8 @@ class DownloadVideo(Task):
         default="https://happypathspublic.blob.core.windows.net/videos/orangutan.mp4"
     )
     output_video_name = Parameter(default="orangutan.mp4")
-    pool_id = Parameter()
     path = os.path.join("data", "luigioutputs")
 
-    def requires(self):
-        return PrepareAzureBatchCPU(pool_id=self.pool_id)
 
     def output(self):
         return SuffixPreservingLocalTarget(
