@@ -48,6 +48,39 @@ class PreProcessVideo(AzureBatchTask):
     pool_id = luigi.Parameter("AzureBatch-Pool-Id-15")
 
 
+class StyleImages(AzureBatchTask):
+    """ Luigi Task to Stylize Images on Azure Batch
+    :param (str): path to the local directory to save the downloaded video to
+    :param (str): path to the remote video to be downloaded
+    :param (str): output video name to save the downloaded video as
+
+    :return target output
+    :rtype: object (:py:class:`pset_4.luigi.target.SuffixPreservingLocalTarget`)
+    """
+
+    mnt = "/mnt/MyAzureFileShare"
+    styled_image_output = "{}/styled_output".format(mnt)
+    image_input_path = "{}/images".format(mnt)
+
+    command = [
+        "tar -xvzf artifacts.tar.gz",
+        """python3 artifacts/style_transfer.py \
+    --model-dir artifacts \
+    --cuda 0 \
+    --content-dir {} \
+    --output-dir {}""".format(
+            image_input_path, styled_image_output
+        ),
+    ]
+    batch_account_name = luigi.Parameter(os.getenv("BATCH_ACCOUNT_NAME"))
+    batch_account_key = luigi.Parameter(os.getenv("BATCH_ACCOUNT_KEY"))
+    batch_account_url = luigi.Parameter(os.getenv("BATCH_ACCOUNT_URL"))
+    storage_account_name = luigi.Parameter(os.getenv("STORAGE_ACCOUNT_NAME"))
+    storage_account_key = luigi.Parameter(os.getenv("STORAGE_ACCOUNT_KEY"))
+    # script_input_path = luigi.Parameter(default="src/final_project/styletransfer/")
+    pool_id = luigi.Parameter("AzureBatch-Pool-Id-17")
+    data_input_path = luigi.Parameter(default="src/final_project/models/artifacts/")
+
 class PostProcessVideo(AzureBatchTask):
     """
     
@@ -95,3 +128,4 @@ class PostProcessVideo(AzureBatchTask):
 if __name__ == "__main__":
 
     build([PreProcessVideo()], local_scheduler=True)
+>>>>>>> 7900c6103fc7e4659ea9c2efe239f6f6b391ed01
