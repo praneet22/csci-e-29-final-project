@@ -1,6 +1,7 @@
 import os
 import luigi
 from luigi import build
+from luigi.format import Nop
 from luigi.contrib.azurebatch import AzureBatchTask
 from final_project.luigi.target import SuffixPreservingLocalTarget
 
@@ -42,8 +43,9 @@ class PrepareAzureBatchCPU(AzureBatchTask):
     storage_account_name = luigi.Parameter(default=os.getenv("STORAGE_ACCOUNT_NAME"))
     storage_account_key = luigi.Parameter(default=os.getenv("STORAGE_ACCOUNT_KEY"))
     pool_node_count = luigi.IntParameter(default=1)
-    pool_id = luigi.Parameter("AzureBatch-Pool-Id-18")
+    pool_id = luigi.Parameter(default="AzureBatch-Pool-Id-18")
     pool_vm_size = luigi.Parameter(default="STANDARD_D2_V2")
+    path = os.path.join("data", "luigioutputs")
 
     # build up list of commands to run during node setup
     starter_task_cmds = [
@@ -62,6 +64,22 @@ class PrepareAzureBatchCPU(AzureBatchTask):
         "python3 -m pip install torch torchvision Pillow",
     ]
     starter_task_cmds = luigi.ListParameter(default=starter_task_cmds)
+
+    def output(self):
+        return SuffixPreservingLocalTarget(
+            os.path.join(self.path, self.pool_id + "_success"), format=Nop
+        )
+
+    def run(self):
+        super().run()
+        if not os.path.exists(self.path):
+            print("Creating out video Directory: {}".format(self.path))
+            try:
+                os.makedirs(self.path)
+            except FileExistsError:
+                pass
+        with open(os.path.join(self.path, self.pool_id + "_success"), "w") as fp:
+            fp.write(self.pool_id)
 
 
 class PrepareAzureBatchGPU(AzureBatchTask):

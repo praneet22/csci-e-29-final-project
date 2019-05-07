@@ -2,9 +2,9 @@ import os
 import wget
 import shutil
 from pathlib import Path
+from luigi.format import Nop
 from luigi import ExternalTask, Parameter, Task
-
-# from luigi.contrib.external_program import ExternalProgramTask
+from final_project.tasks.prepare_batch import PrepareAzureBatchCPU
 from final_project.luigi.target import SuffixPreservingLocalTarget
 
 
@@ -23,6 +23,16 @@ class DownloadVideo(Task):
         default="https://happypathspublic.blob.core.windows.net/videos/orangutan.mp4"
     )
     output_video_name = Parameter(default="orangutan.mp4")
+    pool_id = Parameter()
+    path = os.path.join("data", "luigioutputs")
+
+    def requires(self):
+        return PrepareAzureBatchCPU(pool_id=self.pool_id)
+
+    def output(self):
+        return SuffixPreservingLocalTarget(
+            os.path.join(self.LOCAL_VIDEO_ROOT, self.output_video_name), format=Nop
+        )
 
     def run(self):
         # wget.download uses cwd if no path is given and will not accept self.output().path
@@ -37,31 +47,7 @@ class DownloadVideo(Task):
         # Download file to data/video if not downloaded
         video_file_path = Path(self.LOCAL_VIDEO_ROOT, self.output_video_name).as_posix()
         if not os.path.exists(video_file_path):
-            print('{} does not exist. Downloading now....'.format(self.output_video_name))
-            wget.download(self.REMOTE_VIDEO_PATH, video_file_path)
-
-
-class CleanUpResources(ExternalTask):
-    """ Clean up the video downloaded by wget.download to the cwd """
-
-    LOCAL_VIDEO_ROOT = Parameter(default=Path("data", "video").as_posix())
-    REMOTE_VIDEO_PATH = Parameter(
-        default="https://happypathspublic.blob.core.windows.net/videos/orangutan.mp4"
-    )
-    output_video_name = Parameter(default="orangutan.mp4")
-
-    def requires(self):
-        return DownloadVideo(
-            self.LOCAL_VIDEO_ROOT, self.REMOTE_VIDEO_PATH, self.output_video_name
-        )
-
-    def run(self):
-        if os.path.exists(self.output_video_name):
-            os.remove(self.output_video_name)
             print(
-                " ==> INFO: {} has been successfully cleaned up.".format(
-                    self.output_video_name
-                )
+                "{} does not exist. Downloading now....".format(self.output_video_name)
             )
-        else:
-            print(" ==> INFO: {} does not exist.".format(self.output_video_name))
+            wget.download(self.REMOTE_VIDEO_PATH, video_file_path)
