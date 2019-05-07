@@ -4,6 +4,7 @@ import datetime
 from luigi import build
 from luigi.format import Nop
 from luigi.contrib.azurebatch import AzureBatchTask
+from final_project.tasks.prepare_batch import PrepareAzureBatchCPU
 from final_project.tasks.data import DownloadVideo
 from final_project.luigi.target import SuffixPreservingLocalTarget
 
@@ -53,7 +54,11 @@ class PreProcessVideo(AzureBatchTask):
     path = os.path.join("data", "luigioutputs")
 
     def requires(self):
-        return DownloadVideo(pool_id=self.pool_id)
+
+        return {
+            "DownloadVideo": DownloadVideo(),
+            "PrepareAzureBatchCPU": PrepareAzureBatchCPU(pool_id=self.pool_id),
+        }
 
     def output(self):
         return SuffixPreservingLocalTarget(
