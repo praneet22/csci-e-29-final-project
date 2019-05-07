@@ -69,7 +69,9 @@ class PreProcessVideo(AzureBatchTask):
                 os.makedirs(self.path)
             except FileExistsError:
                 pass
-        with open(os.path.join(self.path, self.__class__.__name__ + "_success"),"w") as fp:
+        with open(
+            os.path.join(self.path, self.__class__.__name__ + "_success"), "w"
+        ) as fp:
             fp.write(self.pool_id)
 
 
@@ -115,7 +117,6 @@ class StyleImages(AzureBatchTask):
             os.path.join(self.path, self.__class__.__name__ + "_success"), format=Nop
         )
 
-
     def run(self):
         time.sleep(4)
         super().run()
@@ -125,9 +126,10 @@ class StyleImages(AzureBatchTask):
                 os.makedirs(self.path)
             except FileExistsError:
                 pass
-        with open(os.path.join(self.path, self.__class__.__name__ + "_success"),"w") as fp:
+        with open(
+            os.path.join(self.path, self.__class__.__name__ + "_success"), "w"
+        ) as fp:
             fp.write(self.pool_id)
-
 
 
 class PostProcessVideo(AzureBatchTask):
@@ -189,5 +191,7 @@ class PostProcessVideo(AzureBatchTask):
                 os.makedirs(self.path)
             except FileExistsError:
                 pass
-        with open(os.path.join(self.path, self.__class__.__name__ + "_success"),"w") as fp:
+        with open(
+            os.path.join(self.path, self.__class__.__name__ + "_success"), "w"
+        ) as fp:
             fp.write(self.pool_id)

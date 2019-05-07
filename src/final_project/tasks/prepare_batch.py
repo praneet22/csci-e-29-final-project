@@ -66,7 +66,9 @@ class PrepareAzureBatchCPU(AzureBatchTask):
     starter_task_cmds = luigi.ListParameter(default=starter_task_cmds)
 
     def output(self):
-        return SuffixPreservingLocalTarget(os.path.join(self.path,self.pool_id+"_success"), format=Nop)
+        return SuffixPreservingLocalTarget(
+            os.path.join(self.path, self.pool_id + "_success"), format=Nop
+        )
 
     def run(self):
         super().run()
@@ -76,9 +78,8 @@ class PrepareAzureBatchCPU(AzureBatchTask):
                 os.makedirs(self.path)
             except FileExistsError:
                 pass
-        with open(os.path.join(self.path,self.pool_id+"_success"),"w") as fp:
+        with open(os.path.join(self.path, self.pool_id + "_success"), "w") as fp:
             fp.write(self.pool_id)
-
 
 
 class PrepareAzureBatchGPU(AzureBatchTask):

@@ -30,8 +30,9 @@ class DownloadVideo(Task):
         return PrepareAzureBatchCPU(pool_id=self.pool_id)
 
     def output(self):
-        return SuffixPreservingLocalTarget(os.path.join(self.LOCAL_VIDEO_ROOT,self.output_video_name), format=Nop)
-
+        return SuffixPreservingLocalTarget(
+            os.path.join(self.LOCAL_VIDEO_ROOT, self.output_video_name), format=Nop
+        )
 
     def run(self):
         # wget.download uses cwd if no path is given and will not accept self.output().path
@@ -46,7 +47,7 @@ class DownloadVideo(Task):
         # Download file to data/video if not downloaded
         video_file_path = Path(self.LOCAL_VIDEO_ROOT, self.output_video_name).as_posix()
         if not os.path.exists(video_file_path):
-            print('{} does not exist. Downloading now....'.format(self.output_video_name))
+            print(
+                "{} does not exist. Downloading now....".format(self.output_video_name)
+            )
             wget.download(self.REMOTE_VIDEO_PATH, video_file_path)
-
-
